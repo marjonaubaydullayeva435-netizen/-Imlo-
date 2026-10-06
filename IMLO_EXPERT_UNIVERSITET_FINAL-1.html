@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMLO EXPERT — Universitet Final</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#090d1a,#111a32 55%,#0a1020);color:#fff;min-height:100vh}
+.wrap{max-width:1150px;margin:auto;padding:28px}
+header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:22px}
+.logo{font-size:34px;font-weight:900;letter-spacing:2px}.logo span{color:#6ee7ff}
+.badge{padding:10px 16px;border:1px solid #33466f;border-radius:999px;color:#b8c7e8;font-size:14px}
+.panel{background:rgba(20,29,53,.9);border:1px solid #29395f;border-radius:24px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.start{text-align:center;padding:55px 25px}.start h1{font-size:42px;margin:10px 0}.start p{color:#aebbd7;font-size:18px;line-height:1.6}
+button{border:0;border-radius:14px;padding:16px 24px;font-size:17px;font-weight:800;cursor:pointer;transition:.18s}
+.primary{background:#6ee7ff;color:#07111d}.primary:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.hidden{display:none!important}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}
+.progress{height:9px;background:#202c49;border-radius:99px;overflow:hidden;margin-bottom:25px}.bar{height:100%;background:linear-gradient(90deg,#6ee7ff,#a78bfa);width:0;transition:.25s}
+.meta{display:flex;gap:10px;flex-wrap:wrap}.pill{padding:8px 12px;background:#182441;border:1px solid #2b3c63;border-radius:10px;color:#c8d4ef;font-size:14px}
+.level{font-weight:900;color:#a78bfa}.timer{font-size:28px;font-weight:900;color:#6ee7ff;min-width:55px;text-align:right}
+.question{font-size:27px;line-height:1.45;font-weight:800;margin:22px 0 25px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:14px}.opt{background:#141f38;color:#eef4ff;border:1px solid #304264;text-align:left;min-height:72px}.opt:hover:not(:disabled){border-color:#6ee7ff;background:#1a2a4a}.opt:disabled{cursor:default}
+.correct{background:#123c31!important;border-color:#37d6a0!important}.wrong{background:#45202a!important;border-color:#ff6b81!important}
+.feedback{min-height:28px;margin-top:17px;font-weight:800}.good{color:#55e6b2}.bad{color:#ff8195}
+.next{margin-top:14px;display:none}
+.result{text-align:center}.score{font-size:68px;font-weight:900;color:#6ee7ff}.rank{font-size:25px;font-weight:900;margin:10px 0 25px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{padding:18px;background:#141f38;border:1px solid #2d3d60;border-radius:15px}.stat b{display:block;font-size:25px;margin-bottom:5px}.stat span{color:#91a2c7;font-size:13px}
+.review{text-align:left;margin-top:25px}.review-item{padding:15px;border-left:4px solid #ff7187;background:#121c33;margin:10px 0;border-radius:8px}.review-item small{color:#91a2c7}.review-item b{display:block;margin:5px 0}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:25px 0}.rule{background:#111c33;padding:16px;border:1px solid #28395e;border-radius:14px}.rule b{display:block;margin-bottom:6px;color:#6ee7ff}.rule span{color:#9eacce;font-size:14px;line-height:1.4}
+@media(max-width:760px){.options,.rules,.stats{grid-template-columns:1fr}.question{font-size:22px}.logo{font-size:25px}.start h1{font-size:32px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="logo">IMLO <span>EXPERT</span></div><div class="badge">UNIVERSITET • FINAL CHALLENGE</div></header>
+
+<section id="start" class="panel start">
+<h1>30 TA MURAKKAB SAVOL</h1>
+<p>Bu oddiy test emas. Har bir savolda imlo me’yorining nozik jihatlari yashirilgan.<br>
+<strong>CORE → ADVANCED → EXPERT → FINAL</strong></p>
+<div class="rules">
+<div class="rule"><b>CORE</b><span>Qo‘shib, ajratib va chiziqcha bilan yozish</span></div>
+<div class="rule"><b>ADVANCED</b><span>Bosh harf, qo‘shimcha va o‘zlashma birliklar</span></div>
+<div class="rule"><b>EXPERT</b><span>Gap ichidagi yashirin xatolarni aniqlash</span></div>
+</div>
+<button class="primary" onclick="startGame()">CHALLENGE’NI BOSHLASH →</button>
+</section>
+
+<section id="game" class="panel hidden">
+<div class="top">
+<div class="meta"><div class="pill" id="level">CORE</div><div class="pill" id="qnum">1 / 30</div><div class="pill">Ball: <b id="score">0</b></div><div class="pill">Streak: <b id="streak">0</b></div></div>
+<div class="timer" id="timer">20</div>
+</div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="question" id="question"></div>
+<div class="options" id="options"></div>
+<div class="feedback" id="feedback"></div>
+<button class="primary next" id="next" onclick="nextQuestion()">KEYINGI SAVOL →</button>
+</section>
+
+<section id="result" class="panel result hidden">
+<h1>CHALLENGE YAKUNLANDI</h1>
+<div class="score" id="finalScore">0</div>
+<div class="rank" id="rank"></div>
+<div class="stats">
+<div class="stat"><b id="correct">0</b><span>To‘g‘ri</span></div>
+<div class="stat"><b id="wrong">0</b><span>Noto‘g‘ri</span></div>
+<div class="stat"><b id="accuracy">0%</b><span>Aniqlik</span></div>
+<div class="stat"><b id="bonus">0</b><span>Bonus ball</span></div>
+</div>
+<div class="review" id="review"></div>
+<button class="primary" onclick="location.reload()">QAYTA O‘YNASH ↻</button>
+</section>
+</div>
+
+<script>
+const questions=[
+{l:"CORE",q:"Qaysi qatorda barcha birliklar imlo me’yoriga muvofiq yozilgan?",o:["bir oz, hech qachon, ota-ona, umumxalq","biroz, hechqachon, ota-ona, umum xalq","bir oz, hechqachon, ota ona, umumxalq","biroz, hech qachon, ota ona, umum xalq"],a:0,e:"«bir oz», «hech qachon», «ota-ona», «umumxalq» — me’yoriy yozilishlar."},
+{l:"CORE",q:"Qaysi variantda juft va takroriy so‘zlarning yozilishi to‘g‘ri?",o:["asta-sekin, qop-qora, ko‘pdan-ko‘p","astasekin, qop qora, ko‘pdan ko‘p","asta sekin, qop-qora, ko‘pdan ko‘p","asta-sekin, qop qora, ko‘pdan-ko‘p"],a:0,e:"Juft/takroriy birliklarning ayrimlari chiziqcha bilan yoziladi."},
+{l:"CORE",q:"Qaysi qatorda hamma so‘zlar qo‘shib yozilishi kerak?",o:["allaqachon, bugun, birpas","har doim, allaqachon, birpas","bir zum, bugun, allaqachon","hech qachon, bugun, birpas"],a:0,e:"«allaqachon», «bugun», «birpas» qo‘shib yoziladi."},
+{l:"CORE",q:"Qaysi variant imlo jihatdan to‘g‘ri?",o:["ilm-fan, uy-joy, ota-ona","ilm fan, uy-joy, ota ona","ilm-fan, uyjoy, ota-ona","ilmfan, uy-joy, ota-ona"],a:0,e:"Juft ma’noli birliklar chiziqcha bilan yoziladi."},
+{l:"CORE",q:"Qaysi qatorda ajratib yozilishi kerak bo‘lgan birliklar to‘g‘ri berilgan?",o:["har bir, shu yerda, bir qancha","harbir, shuyerda, birqancha","har-bir, shu-yerda, bir-qancha","har bir, shuyerda, birqancha"],a:0,e:"«har bir», «shu yerda», «bir qancha» ajratib yoziladi."},
+{l:"CORE",q:"Qaysi qatorda tutuq belgisi to‘g‘ri qo‘llangan?",o:["ma’no, ta’lim, e’tibor","ma'no, ta’lim, etibor","ma’no, talim, e’tibor","maʼno, ta'lim, e'tibor"],a:0,e:"O‘zbek lotin yozuvida tutuq belgisi qat’iy farqlanadi; testda yagona standart shakl tanlangan."},
+{l:"CORE",q:"Qaysi so‘zning qo‘shimcha bilan yozilishi to‘g‘ri?",o:["yurakka","yurakga","yurak-ka","yurakqa"],a:0,e:"«yurak + ka» → «yurakka» shaklida yoziladi."},
+{l:"CORE",q:"Qaysi qatorda barcha o‘zbekcha maxsus harflar to‘g‘ri ifodalangan?",o:["o‘quvchi, g‘oya, o‘zbek","o'quvchi, g'oya, o'zbek","o‘quvchi, g‘oya, o'zbek","o'quvchi, g‘oya, o‘zbek"],a:0,e:"Testning standart varianti tipografik tutuq belgisi bilan berilgan."},
+
+{l:"ADVANCED",q:"Qaysi qatorda barcha birliklar me’yoriy shaklda?",o:["muvaffaqiyat, tashabbus, tadqiqot","muvoffaqiyat, tashabus, tadqiqod","muvaffaqiyat, tashabus, tadqiqot","muvoffaqiyat, tashabbus, tadqiqot"],a:0,e:"«muvaffaqiyat», «tashabbus», «tadqiqot» shakllari me’yoriy."},
+{l:"ADVANCED",q:"Qaysi qatorda so‘zlar ma’no va imloga ko‘ra to‘g‘ri yozilgan?",o:["xohish, xursand, xususiyat","hohish, hursand, hususiyat","xohish, hursand, xususiyat","hohish, xursand, hususiyat"],a:0,e:"Bu so‘zlarda x harfining qo‘llanishi muhim."},
+{l:"ADVANCED",q:"Qaysi variantda tashkilot nomi bosh harflar qoidalariga mos?",o:["O‘zbekiston Respublikasi Oliy Majlisi","o‘zbekiston Respublikasi Oliy Majlisi","O‘zbekiston respublikasi Oliy majlisi","O‘zbekiston Respublikasi oliy Majlisi"],a:0,e:"Rasmiy nom tarkibidagi bosh harflar me’yor asosida qo‘llanadi."},
+{l:"ADVANCED",q:"Qaysi qatorda qisqartmalar to‘g‘ri berilgan?",o:["BMT, O‘zbekiston FA, Toshkent sh.","Bmt, O‘zbekiston fa, Toshkent Sh.","BMT., O‘zbekiston FA., Toshkent shahar.","bmt, O‘zbekiston FA, Toshkent sh."],a:0,e:"Qisqartmalarning bosh harf va nuqta qo‘llanishi farqlanadi."},
+{l:"ADVANCED",q:"Qaysi gap imlo jihatdan to‘g‘ri?",o:["U tadqiqot natijalarini tahlil qildi.","U tadqiqod natijalarini tahlil qildi.","U tadqiqot natijalarini taxlil qildi.","U tadqiqot natijalarini tahlil qildi."],a:0,e:"«tadqiqot» va «tahlil» shakllari me’yoriy."},
+{l:"ADVANCED",q:"Qaysi qatorda barcha so‘zlar to‘g‘ri yozilgan?",o:["mas’ul, ta’sir, san’at","ma’sul, tas’ir, san’at","masul, ta’sir, sanat","mas’ul, tasir, san’at"],a:0,e:"Tutuq belgisi va undoshlarning yozilishi bu savolning asosiy tuzog‘i."},
+{l:"ADVANCED",q:"Qaysi variantda birikmalar to‘g‘ri yozilgan?",o:["temir yo‘l, oshqovoq, qo‘lqop","temiryo‘l, osh qovoq, qo‘l qop","temir yo‘l, osh qovoq, qo‘l-qop","temiryo‘l, oshqovoq, qo‘l qop"],a:0,e:"Birliklarning lug‘aviy shakli va qo‘shib/ajratib yozilishi farqlanadi."},
+{l:"ADVANCED",q:"Qaysi qatorda so‘zlar to‘g‘ri yozilgan?",o:["ma’rifat, mas’uliyat, ma’naviyat","ma’rifat, masuliyat, manaviyat","ma'rifat, ma’suliyat, ma’naviyat","ma’rifat, ma'suliyat, ma'naviyat"],a:0,e:"Standart variantda tutuq belgisi bir xil tipografik shaklda qo‘llangan."},
+
+{l:"EXPERT",q:"Gapdagi imlo xatolari sonini toping: «Universitet talabalari ilmiy-tadqiqot ishlarini yuqori saviyada olib borishmoqda.»",o:["0 ta","1 ta","2 ta","3 ta"],a:0,e:"Berilgan gapdagi birliklar imlo jihatdan me’yoriy."},
+{l:"EXPERT",q:"Qaysi qatorda BARCHA birliklar to‘g‘ri yozilgan?",o:["ilmiy-tadqiqot, ijtimoiy-siyosiy, o‘quv-uslubiy","ilmiy tadqiqot, ijtimoiy-siyosiy, o‘quv uslubiy","ilmiy-tadqiqot, ijtimoiy siyosiy, o‘quv-uslubiy","ilmiytadqiqot, ijtimoiy-siyosiy, o‘quv-uslubiy"],a:0,e:"Bu savolda birikmalarning chiziqcha bilan yozilishi sinovdan o‘tadi."},
+{l:"EXPERT",q:"Qaysi variantda imlo jihatdan xato mavjud?",o:["hech kim, hech qaysi, hech qachon","hechkim, hech qaysi, hech qachon","hech kim, hechqaysi, hech qachon","hech kim, hech qaysi, hechqachon"],a:0,e:"«hech kim», «hech qaysi», «hech qachon» ajratib yoziladi."},
+{l:"EXPERT",q:"Qaysi qatorda barcha birliklar to‘g‘ri?",o:["bir necha, bir talay, bir oz","birnecha, bir talay, biroz","bir necha, birtalay, bir oz","birnecha, birtalay, biroz"],a:0,e:"Savol ayniqsa miqdor bildiruvchi birliklarning yozilishiga qaratilgan."},
+{l:"EXPERT",q:"Qaysi gapda bosh harf qo‘llanishi eng to‘g‘ri?",o:["O‘zbekiston Respublikasi Prezidenti nutq so‘zladi.","O‘zbekiston respublikasi Prezidenti nutq so‘zladi.","O‘zbekiston Respublikasi prezidenti Nutq so‘zladi.","o‘zbekiston Respublikasi Prezidenti nutq so‘zladi."],a:0,e:"Rasmiy nom tarkibidagi bosh harf va oddiy lavozim nomi farqlanadi."},
+{l:"EXPERT",q:"Qaysi qatorda shaklan juda o‘xshash, ammo imlo jihatdan noto‘g‘ri variant bor?",o:["ta’kid, ta’sir, ta’lim","taziq, ta’sir, ta’lim","ta’kid, tasir, ta’lim","ta’kid, ta’sir, talim"],a:0,e:"Birinchi qatordagi uchala birlik ham me’yoriy shaklda."},
+{l:"EXPERT",q:"Qaysi variantda barcha so‘zlar qo‘shimcha qo‘shilganda to‘g‘ri shaklga ega?",o:["qishloqqa, yurakka, terakka","qishloqga, yurakga, terakga","qishloqqa, yurakga, terakka","qishloqka, yurakka, terakqa"],a:0,e:"q/k tovushlari bilan bog‘liq qo‘shimcha shakllari sinovdan o‘tadi."},
+{l:"EXPERT",q:"Qaysi qatorda o‘zlashma so‘zlarning imlosi to‘liq to‘g‘ri?",o:["konstitutsiya, kompetensiya, innovatsiya","konstitutsia, kompetensiya, inovatsiya","konstitusiya, kompetentsiya, innovatsiya","konstitutsiya, kompetensia, innovatsia"],a:0,e:"O‘zlashma terminlarda harf birikmalarining me’yoriy shakli muhim."},
+
+{l:"FINAL",q:"FINAL 1. Qaysi qatorda barcha birliklar imlo jihatdan to‘g‘ri yozilgan?",o:["ijtimoiy-iqtisodiy, ilmiy-tadqiqot, ma’naviy-ma’rifiy","ijtimoiy iqtisodiy, ilmiy-tadqiqot, ma’naviy-ma'rifiy","ijtimoiy-iqtisodiy, ilmiy tadqiqot, ma’naviy-ma’rifiy","ijtimoiy-iqtisodiy, ilmiy-tadqiqot, manaviy-ma’rifiy"],a:0,e:"Uchala murakkab birlik ham chiziqcha va tutuq belgisi bilan me’yoriy berilgan."},
+{l:"FINAL",q:"FINAL 2. Qaysi qatorda BARCHA so‘zlar to‘g‘ri yozilgan?",o:["muassasa, taassurot, tashabbus, muvaffaqiyat","muassasa, tasurot, tashabbus, muvaffaqiyat","muassasa, taassurot, tashabus, muvoffaqiyat","muasasa, taassurot, tashabbus, muvaffaqiyat"],a:0,e:"Ikki undosh va qo‘sh undoshlarning yozilishi eng katta tuzoq."},
+{l:"FINAL",q:"FINAL 3. Gapda nechta imlo xatosi bor? «Bugungi anjumanda Oliy Majlis Qonunchilik palatasi deputatlari, oliy ta’lim muassasalari professor-o‘qituvchilari va yosh tadqiqotchilar ishtirok etdi.»",o:["0 ta","1 ta","2 ta","3 ta"],a:0,e:"Berilgan gapdagi imlo shakllari me’yoriy."},
+{l:"FINAL",q:"FINAL 4. Qaysi qatorda barcha variantlar to‘g‘ri qo‘llangan?",o:["e’tiqod, e’tirof, e’tibor, e’lon","etqod, e’tirof, e’tibor, e’lon","e’tiqod, etirof, e’tibor, e’lon","e’tiqod, e’tirof, etibor, e’lon"],a:0,e:"Tutuq belgisi qo‘llanadigan birliklar bir xil darajada sinovdan o‘tadi."},
+{l:"FINAL",q:"FINAL 5. ENG QIYIN. Qaysi qatorda imlo me’yoriga mos yozilgan birliklar jamlangan?",o:["umumta’lim, umumxalq, xalqaro, o‘zaro","umum ta’lim, umumxalq, xalq aro, o‘zaro","umumta’lim, umum-xalq, xalqaro, o‘z aro","umumta’lim, umumxalq, xalqaro, o‘z-aro"],a:0,e:"Bu savolda qo‘shib yoziladigan murakkab birliklar va o‘zaro so‘zining yozilishi bir vaqtda tekshiriladi."}
+];
+
+let idx=0,score=0,streak=0,correct=0,wrong=0,bonus=0,time=20,interval=null,answered=false,wrongList=[];
+
+function startGame(){
+ document.getElementById("start").classList.add("hidden");
+ document.getElementById("game").classList.remove("hidden");
+ showQuestion();
+}
+function showQuestion(){
+ answered=false;
+ const x=questions[idx];
+ document.getElementById("level").textContent=x.l;
+ document.getElementById("qnum").textContent=(idx+1)+" / "+questions.length;
+ document.getElementById("score").textContent=score;
+ document.getElementById("streak").textContent=streak;
+ document.getElementById("bar").style.width=(idx/questions.length*100)+"%";
+ document.getElementById("question").textContent=x.q;
+ const box=document.getElementById("options"); box.innerHTML="";
+ document.getElementById("feedback").textContent="";
+ document.getElementById("feedback").className="feedback";
+ document.getElementById("next").style.display="none";
+ x.o.forEach((v,i)=>{
+  const b=document.createElement("button"); b.className="opt"; b.textContent=String.fromCharCode(65+i)+") "+v;
+  b.onclick=()=>answer(i,b); box.appendChild(b);
+ });
+ time=x.l==="FINAL"?30:x.l==="EXPERT"?25:x.l==="ADVANCED"?22:20;
+ document.getElementById("timer").textContent=time;
+ clearInterval(interval); interval=setInterval(tick,1000);
+}
+function tick(){
+ if(answered)return;
+ time--; document.getElementById("timer").textContent=time;
+ if(time<=0){answer(-1,null);}
+}
+function answer(choice,clicked){
+ if(answered)return; answered=true; clearInterval(interval);
+ const x=questions[idx], buttons=[...document.getElementById("options").children];
+ buttons.forEach(b=>b.disabled=true);
+ buttons[x.a].classList.add("correct");
+ if(choice===x.a){
+   correct++; streak++;
+   let base=x.l==="FINAL"?30:x.l==="EXPERT"?25:x.l==="ADVANCED"?20:15;
+   let add=streak>=3?10:0; if(x.l==="FINAL")add+=10;
+   score+=base+add; bonus+=add;
+   document.getElementById("feedback").textContent="✓ TO‘G‘RI! "+x.e+"  +"+(base+add)+" ball";
+   document.getElementById("feedback").className="feedback good";
+ }else{
+   wrong++; streak=0;
+   if(clicked)clicked.classList.add("wrong");
+   wrongList.push({q:x.q,y:choice<0?"Vaqt tugadi":x.o[choice],r:x.o[x.a]});
+   document.getElementById("feedback").textContent="✗ XATO. "+x.e;
+   document.getElementById("feedback").className="feedback bad";
+ }
+ document.getElementById("score").textContent=score;
+ document.getElementById("streak").textContent=streak;
+ document.getElementById("next").style.display="inline-block";
+}
+function nextQuestion(){
+ idx++;
+ if(idx>=questions.length){finish();return;}
+ showQuestion();
+}
+function finish(){
+ clearInterval(interval);
+ document.getElementById("game").classList.add("hidden");
+ document.getElementById("result").classList.remove("hidden");
+ document.getElementById("finalScore").textContent=score;
+ let rank=score>=650?"🏆 IMLO PROFESSOR":score>=540?"🥇 IMLO EXPERT":score>=420?"🥈 KUCHLI FILOLOG":score>=300?"🥉 ILMIY DARAJA":"📚 YANA MASHQ QILING";
+ document.getElementById("rank").textContent=rank;
+ document.getElementById("correct").textContent=correct;
+ document.getElementById("wrong").textContent=wrong;
+ document.getElementById("accuracy").textContent=Math.round(correct/questions.length*100)+"%";
+ document.getElementById("bonus").textContent=bonus;
+ const r=document.getElementById("review");
+ if(wrongList.length===0) r.innerHTML="<h2>🔥 Mukammal natija!</h2><p>Birorta ham savolda xato qilmadingiz.</p>";
+ else{
+  r.innerHTML="<h2>📌 Xatolar tahlili</h2>";
+  wrongList.forEach((w,i)=>{r.innerHTML+=`<div class="review-item"><small>${i+1}-xato</small><b>${w.q}</b><div>Sizning javobingiz: ${w.y}</div><div>To‘g‘ri javob: <strong>${w.r}</strong></div></div>`});
+ }
+}
+</script>
+</body>
+</html>
